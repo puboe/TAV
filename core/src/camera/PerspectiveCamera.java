@@ -13,9 +13,10 @@ public class PerspectiveCamera extends Camera {
     public PerspectiveCamera(float fieldOfViewY, float viewPortX, float viewPortY, float near, float far) {
         super(viewPortX, viewPortY, near, far);
         this.fieldOfViewY = fieldOfViewY;
-        this.fieldOfViewX = fieldOfViewY; //(float) (2.0 * Math.atan(Math.tan(fieldOfViewY / 2.0) * (viewPortX / viewPortY)));
+        this.fieldOfViewX = (float) (2.0 * Math.toDegrees(Math.atan(Math.tan(Math.toRadians(fieldOfViewY) / 2.0))) * (viewPortX / viewPortY));
         System.out.println("Field of view Y: " + fieldOfViewY);
         System.out.println("Field of view X: " + fieldOfViewX);
+        setProjectionMatrix(initializeProjectionMatrix());
     }
 
     @Override
@@ -32,11 +33,4 @@ public class PerspectiveCamera extends Camera {
         return new Matrix4(vector);
     }
 
-    @Override
-    public Matrix4 initializeWorldMatrix() {
-
-        // TODO: Implement this!
-
-        return new Matrix4();
-    }
 }

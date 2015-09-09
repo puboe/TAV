@@ -12,7 +12,7 @@ public abstract class Camera {
     float far;
     float viewPortY;
     float viewPortX;
-    Matrix4 projectionMatrix;
+    Matrix4 projectionMatrix = new Matrix4();
     Matrix4 viewMatrix = new Matrix4();
     Vector3 position = new Vector3();
     Vector3 forward = new Vector3(0, 0, -1);
@@ -25,15 +25,9 @@ public abstract class Camera {
         this.viewPortY = viewPortY;
         this.near = near;
         this.far = far;
-        this.projectionMatrix = initializeProjectionMatrix();
-//        this.worldMatrix = initializeWorldMatrix();
     }
 
     public abstract Matrix4 initializeProjectionMatrix();
-
-    public Matrix4 initializeWorldMatrix() {
-        return new Matrix4();
-    }
 
     public Matrix4 lookAt(int x, int y, int z) {
 
@@ -77,6 +71,10 @@ public abstract class Camera {
         System.out.println("Look at matrix: \n" + viewMatrix.toString());
 
         return viewMatrix;
+    }
+
+    public void setProjectionMatrix(Matrix4 projectionMatrix) {
+        this.projectionMatrix = projectionMatrix;
     }
 
     public void setPosition(float x, float y, float z) {

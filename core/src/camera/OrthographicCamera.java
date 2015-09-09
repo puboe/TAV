@@ -9,6 +9,7 @@ public class OrthographicCamera extends Camera {
 
     public OrthographicCamera(float viewPortX, float viewPortY, float near, float far) {
         super(viewPortX, viewPortY, near, far);
+        setProjectionMatrix(initializeProjectionMatrix());
 //        position.set(viewPortX / 2.0f, viewPortY / 2.0f, 1f);
     }
 
@@ -30,11 +31,4 @@ public class OrthographicCamera extends Camera {
         return new Matrix4(vector);
     }
 
-    @Override
-    public Matrix4 initializeWorldMatrix() {
-
-        // TODO: Implement this.
-
-        return null;
-    }
 }
