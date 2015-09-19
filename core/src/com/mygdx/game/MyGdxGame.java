@@ -66,7 +66,7 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         img.bind();
         shaderProgram.begin();
-//        shaderProgram.setUniformMatrix("u_worldView", cam.combined);
+//        shaderProgram.setUniformMatrix("MVP", cam.combined);
         shaderProgram.setUniformMatrix("MVP", camera.getCombined());
         shaderProgram.setUniformi("u_texture", 0);
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);

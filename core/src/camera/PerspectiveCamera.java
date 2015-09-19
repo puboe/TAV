@@ -22,21 +22,15 @@ public class PerspectiveCamera extends Camera {
     @Override
     public Matrix4 initializeProjectionMatrix() {
 
-//        float[] vector = {
-//                (float) Math.atan(Math.toRadians(fieldOfViewX) / 2.0), 0, 0, 0,
-//                0, (float) Math.atan(Math.toRadians(fieldOfViewY) / 2.0), 0, 0,
-//                0, 0, -(far + near) / (near - far), -1f,
-//                0, 0, 2 * (far * near) / (near - far), 0};
-
         float[] vector = {
                 (float) Math.atan(Math.toRadians(fieldOfViewX) / 2.0), 0, 0, 0,
                 0, (float) Math.atan(Math.toRadians(fieldOfViewY) / 2.0), 0, 0,
                 0, 0, -(far + near) / (near - far), 2 * (far * near) / (near - far),
                 0, 0, -1f, 0};
 
+//        System.out.println("PerspectiveCamera Projection Matrix: \n" + new Matrix4(vector).toString());
 
-        System.out.println("PerspectiveCamera Projection Matrix: \n" + new Matrix4(vector).toString());
-
+        // Transpose is needed because OpenGL is Column Major.
         return new Matrix4(vector).tra();
     }
 

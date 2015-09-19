@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector3;
  */
 public abstract class Camera {
 
+    private static float SPEED = 1f;
+
     float near;
     float far;
     float viewPortY;
@@ -17,11 +19,9 @@ public abstract class Camera {
     Matrix4 projectionMatrix = new Matrix4();
     Matrix4 viewMatrix = new Matrix4();
     Vector3 position = new Vector3();
-    Vector3 rotation = new Vector3();
     Vector3 forward = new Vector3(0, 0, -1);
     Vector3 up = Vector3.Y;
     Vector3 right = Vector3.X;
-    Vector3 lookingAt = new Vector3();
     boolean dirtyView = true;
 
     public Camera(float viewPortX, float viewPortY, float near, float far) {
@@ -34,22 +34,21 @@ public abstract class Camera {
     public abstract Matrix4 initializeProjectionMatrix();
 
     public Matrix4 lookAt(float x, float y, float z) {
-        lookingAt.set(x, y, z);
 
         Vector3 newForward = position.cpy();
         newForward.sub(x, y, z).nor();
 //        Vector3 newForward = new Vector3(x, y, z);
 //        newForward.sub(position).nor();
-        System.out.println("Forward: " + forward.toString() + ", New Forward: " + newForward.toString());
+//        System.out.println("Forward: " + forward.toString() + ", New Forward: " + newForward.toString());
         forward.set(newForward);
 
         Vector3 newRight = up.cpy();
         newRight.crs(forward).nor();
-        System.out.println("Right: " + right.toString() + ", New Right: " + newRight.toString());
+//        System.out.println("Right: " + right.toString() + ", New Right: " + newRight.toString());
         right.set(newRight);
 
         Vector3 newUp = newForward.crs(newRight).nor();
-        System.out.println("Up: " + up.toString() + ", New Up: " + newUp.toString());
+//        System.out.println("Up: " + up.toString() + ", New Up: " + newUp.toString());
         up.set(newUp);
 
         Matrix4 orientation = getOrientationMatrix();
@@ -69,7 +68,7 @@ public abstract class Camera {
     }
 
     public void setPosition(float x, float y, float z) {
-        position = new Vector3(x, y, z);
+        position.set(x, y, z);
         dirtyView = true;
     }
 
@@ -79,12 +78,10 @@ public abstract class Camera {
     }
 
     public Matrix4 getViewMatrix() {
-
-        Matrix4 translation = TransformUtils.getTranslateMatrix(position);
-        Matrix4 orientation = getOrientationMatrix();
-        orientation.mul(translation);
-        viewMatrix = orientation.inv();
-//        System.out.println(viewMatrix);
+        Matrix4 aux = getOrientationMatrix();
+        aux.mul(TransformUtils.getTranslateMatrix(position));
+        viewMatrix = aux.inv();
+        dirtyView = false;
         return viewMatrix;
     }
 
@@ -100,26 +97,36 @@ public abstract class Camera {
     }
 
     public void update() {
+        // Translation input.
         float deltaX = 0, deltaY = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT))
-            deltaX -= Gdx.graphics.getDeltaTime() * 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT))
-            deltaX += Gdx.graphics.getDeltaTime() * 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP))
-            deltaY += Gdx.graphics.getDeltaTime() * 1f;
-        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN))
-            deltaY -= Gdx.graphics.getDeltaTime() * 1f;
-
-        if (Gdx.input.isTouched()) {
-            forward.rotate(up, Gdx.input.getDeltaX());
-            right.rotate(up, Gdx.input.getDeltaX());
-            forward.rotate(right, Gdx.input.getDeltaY());
-            up.rotate(right, Gdx.input.getDeltaY());
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)) {
+            deltaX -= Gdx.graphics.getDeltaTime() * SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)) {
+            deltaX += Gdx.graphics.getDeltaTime() * SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)) {
+            deltaY += Gdx.graphics.getDeltaTime() * SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)) {
+            deltaY -= Gdx.graphics.getDeltaTime() * SPEED;
         }
 
-        setPosition(position.x + deltaX, position.y + deltaY, position.z);
+        if (deltaX != 0 || deltaY != 0) {
+            setPosition(position.x + deltaX, position.y + deltaY, position.z);
+        }
 
-        getViewMatrix();
+        // Rotation input.
+        if (Gdx.input.isTouched()) {
+            forward.rotate(up, -Gdx.input.getDeltaX());
+            right.rotate(up, -Gdx.input.getDeltaX());
+            forward.rotate(right, -Gdx.input.getDeltaY());
+            up.rotate(right, -Gdx.input.getDeltaY());
+            dirtyView = true;
+        }
 
+        if (dirtyView) {
+            getViewMatrix();
+        }
     }
 }
