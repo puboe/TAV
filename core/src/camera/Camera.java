@@ -1,5 +1,7 @@
 package camera;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
@@ -15,9 +17,11 @@ public abstract class Camera {
     Matrix4 projectionMatrix = new Matrix4();
     Matrix4 viewMatrix = new Matrix4();
     Vector3 position = new Vector3();
+    Vector3 rotation = new Vector3();
     Vector3 forward = new Vector3(0, 0, -1);
     Vector3 up = Vector3.Y;
     Vector3 right = Vector3.X;
+    Vector3 lookingAt = new Vector3();
     boolean dirtyView = true;
 
     public Camera(float viewPortX, float viewPortY, float near, float far) {
@@ -29,7 +33,8 @@ public abstract class Camera {
 
     public abstract Matrix4 initializeProjectionMatrix();
 
-    public Matrix4 lookAt(int x, int y, int z) {
+    public Matrix4 lookAt(float x, float y, float z) {
+        lookingAt.set(x, y, z);
 
         Vector3 newForward = position.cpy();
         newForward.sub(x, y, z).nor();
@@ -47,28 +52,14 @@ public abstract class Camera {
         System.out.println("Up: " + up.toString() + ", New Up: " + newUp.toString());
         up.set(newUp);
 
-        float[] orientationVector = {
-                right.x, right.y, right.z, 0,
-                up.x, up.y, up.z, 0,
-                forward.x, forward.y, forward.z, 0,
-                0, 0, 0, 1};
-
-        Matrix4 orientation = new Matrix4(orientationVector);
+        Matrix4 orientation = getOrientationMatrix();
 //        System.out.println("Orientation matrix: \n" + orientation.toString());
 
-        float[] translationVector = {
-                1, 0, 0, 0,
-                0, 1, 0, 0,
-                0, 0, 1, 0,
-                -position.x, -position.y, -position.z, 1};
-
-        Matrix4 translation = new Matrix4(translationVector);
+        Matrix4 translation = TransformUtils.getTranslateMatrix(position);
 //        System.out.println("Translation matrix: \n" + translation.toString());
 
-        // Si quisieramos guardar la matriz Orientation habría que hacerlo
-        // antes de este paso, porque la sobreescribe.
-        viewMatrix = orientation.mul(translation);
-        System.out.println("Look at matrix: \n" + viewMatrix.toString());
+        viewMatrix = orientation.mul(translation).inv();
+//        System.out.println("Look at matrix: \n" + viewMatrix.toString());
 
         return viewMatrix;
     }
@@ -85,5 +76,47 @@ public abstract class Camera {
     public Matrix4 getCombined() {
         Matrix4 tmp = projectionMatrix.cpy();
         return tmp.mul(viewMatrix);
+    }
+
+    public Matrix4 getViewMatrix() {
+
+        Matrix4 translation = TransformUtils.getTranslateMatrix(position);
+        Matrix4 orientation = getOrientationMatrix();
+        orientation.mul(translation);
+        viewMatrix = orientation.inv();
+//        System.out.println(viewMatrix);
+        return viewMatrix;
+    }
+
+    private Matrix4 getOrientationMatrix() {
+        float[] aux = {
+                right.x, up.x, forward.x, 0,
+                right.y, up.y, forward.y, 0,
+                right.z, up.z, forward.z, 0,
+                0, 0, 0, 1};
+
+        // Transpose is needed because OpenGL is Column Major.
+        return new Matrix4(aux).tra();
+    }
+
+    public void update() {
+        float deltaX = 0, deltaY = 0;
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT))
+            deltaX -= Gdx.graphics.getDeltaTime() * 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT))
+            deltaX += Gdx.graphics.getDeltaTime() * 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_UP))
+            deltaY += Gdx.graphics.getDeltaTime() * 1f;
+        if (Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN))
+            deltaY -= Gdx.graphics.getDeltaTime() * 1f;
+
+        if (Gdx.input.isTouched()) {
+            // TODO Rotate.
+        }
+
+        setPosition(position.x + deltaX, position.y + deltaY, position.z);
+
+        getViewMatrix();
+
     }
 }

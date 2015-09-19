@@ -15,20 +15,14 @@ public class OrthographicCamera extends Camera {
 
     @Override
     public Matrix4 initializeProjectionMatrix() {
-//        float[] vector = {
-//                1 / viewPortX,   0,                  0,                  0,
-//                0,                  1 / viewPortY,   0,                  0,
-//                0,                  0,                  -2 / (far - near),  -(far + near) / (far - near),
-//                0,                  0,                  0,                  1f};
-
         float[] vector = {
                 1f / viewPortX, 0, 0, 0,
                 0, 1f / viewPortY, 0, 0,
-                0, 0, -2f / (far - near), 0,
-                0, 0, -(far + near) / (far - near), 1f};
+                0, 0, -2f / (far - near), -(far + near) / (far - near),
+                0, 0, 0, 1f};
 
-        System.out.println("OrthographicCamera Projection Matrix: \n" + new Matrix4(vector).toString());
-        return new Matrix4(vector);
+        // Transpose is needed because OpenGL is Column Major.
+        return new Matrix4(vector).tra();
     }
 
 }
