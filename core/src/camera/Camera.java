@@ -111,7 +111,10 @@ public abstract class Camera {
             deltaY -= Gdx.graphics.getDeltaTime() * 1f;
 
         if (Gdx.input.isTouched()) {
-            // TODO Rotate.
+            forward.rotate(up, Gdx.input.getDeltaX());
+            right.rotate(up, Gdx.input.getDeltaX());
+            forward.rotate(right, Gdx.input.getDeltaY());
+            up.rotate(right, Gdx.input.getDeltaY());
         }
 
         setPosition(position.x + deltaX, position.y + deltaY, position.z);

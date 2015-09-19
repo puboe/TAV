@@ -50,8 +50,8 @@ public class MyGdxGame extends ApplicationAdapter {
 //        camController = new CameraInputController(cam);
 //        Gdx.input.setInputProcessor(camController);
 
-//        camera = new camera.OrthographicCamera(3f, 3f, 0f, 15f);
-        camera = new camera.PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, 10f);
+        camera = new camera.OrthographicCamera(3f, 3f, 0f, 15f);
+//        camera = new camera.PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, 1000f);
         camera.setPosition(0f, 0f, 3f);
         camera.lookAt(0, 0, 0);
 
