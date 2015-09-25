@@ -4,11 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import commons.GameObject;
 
 /**
  * Abstract class representing the Camera.
  */
-public abstract class Camera {
+public abstract class Camera extends GameObject {
 
     private static float SPEED = 1f;
 
@@ -18,10 +19,6 @@ public abstract class Camera {
     float viewPortX;
     Matrix4 projectionMatrix = new Matrix4();
     Matrix4 viewMatrix = new Matrix4();
-    Vector3 position = new Vector3();
-    Vector3 forward = new Vector3(0, 0, -1);
-    Vector3 up = Vector3.Y;
-    Vector3 right = Vector3.X;
     boolean dirtyView = true;
 
     public Camera(float viewPortX, float viewPortY, float near, float far) {
