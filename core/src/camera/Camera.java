@@ -78,8 +78,10 @@ public abstract class Camera {
     }
 
     public Matrix4 getViewMatrix() {
-        Matrix4 aux = getOrientationMatrix();
-        aux.mul(TransformUtils.getTranslateMatrix(position));
+//        Matrix4 aux = getOrientationMatrix();
+//        aux.mul(TransformUtils.getTranslateMatrix(position));
+        Matrix4 aux = TransformUtils.getTranslateMatrix(position);
+        aux.mul(getOrientationMatrix());
         viewMatrix = aux.inv();
         dirtyView = false;
         return viewMatrix;

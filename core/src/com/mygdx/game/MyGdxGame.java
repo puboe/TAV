@@ -12,9 +12,10 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
 
 public class MyGdxGame extends ApplicationAdapter {
-    Texture img;
+    Texture texture;
     Mesh spaceshipMesh;
     ShaderProgram shaderProgram;
     com.badlogic.gdx.graphics.Camera cam;
@@ -23,9 +24,9 @@ public class MyGdxGame extends ApplicationAdapter {
 
     @Override
     public void create() {
-        img = new Texture("ship.png");
-        String vs = Gdx.files.internal("defaultVS.glsl").readString();
-        String fs = Gdx.files.internal("defaultFS.glsl").readString();
+        texture = new Texture("ship.png");
+        String vs = Gdx.files.internal("point-light-VS.glsl").readString();
+        String fs = Gdx.files.internal("point-light-FS.glsl").readString();
         shaderProgram = new ShaderProgram(vs, fs);
         System.out.println(shaderProgram.getLog());
         ModelLoader<?> loader = new ObjLoader();
@@ -64,11 +65,16 @@ public class MyGdxGame extends ApplicationAdapter {
 
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        img.bind();
+        Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
+        Gdx.gl.glDepthFunc(GL20.GL_LESS);
+        texture.bind();
         shaderProgram.begin();
-//        shaderProgram.setUniformMatrix("MVP", cam.combined);
-        shaderProgram.setUniformMatrix("MVP", camera.getCombined());
+        shaderProgram.setUniformMatrix("u_mvp", camera.getCombined());
+        shaderProgram.setUniformMatrix("u_model", new Matrix4());
         shaderProgram.setUniformi("u_texture", 0);
+        shaderProgram.setUniformf("light_intensity", 1f);
+        shaderProgram.setUniform3fv("light_color", new float[]{0.5f, 0.5f, 1f}, 0, 3);
+        shaderProgram.setUniform4fv("light_position", new float[]{0.1f, 1f, 0.1f, 1f}, 0, 4);
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
         shaderProgram.end();
     }
