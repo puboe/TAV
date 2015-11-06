@@ -73,7 +73,8 @@ public class MyGdxGame extends ApplicationAdapter {
         shaderProgram.setUniformMatrix("u_model", new Matrix4());
         shaderProgram.setUniformi("u_texture", 0);
         shaderProgram.setUniformf("light_intensity", 1f);
-        shaderProgram.setUniform3fv("light_color", new float[]{0.5f, 0.5f, 1f}, 0, 3);
+        shaderProgram.setUniformf("u_shininess", 1f);
+        shaderProgram.setUniform4fv("light_color", new float[]{0.5f, 0.5f, 1f,1f}, 0, 4);
         shaderProgram.setUniform4fv("light_position", new float[]{0.1f, 1f, 0.1f, 1f}, 0, 4);
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
         shaderProgram.end();

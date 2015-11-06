@@ -8,18 +8,36 @@ uniform sampler2D u_texture;
 uniform vec4 light_position;
 
 uniform float light_intensity;
+uniform float u_shininess;
 
-uniform vec3 light_color;
+uniform vec4 light_color;
 
 void main() {
+
     vec4 texture_color = texture2D(u_texture, v_texCoords);
-    vec4 position = v_position;
-    vec4 direction = normalize(light_position - v_position);
 
-    vec4 light =  dot(v_normal, direction) * texture_color * light_intensity;
-    vec3 diff = light.xyz * light_color;
+    //Direccion de la luz Vector L de las ppt
+    vec3 l = normalize(light_position.xyz - v_position.xyz);
 
-    gl_FragColor = vec4(diff, 1);
+    //Calculamos la direccion a la camara
+    vec3 eye = normalize(-v_position.xyz);
+
+    //Calculamos vector R de la ppt
+    vec3 r = normalize(-reflect(l,v_normal.xyz));
+
+    //Calculamos componente difusa
+    vec4 idiff = max(0.0, (dot(v_normal.xyz, l))) * texture_color * light_intensity * light_color;
+    idiff = clamp(idiff,0.0,1.0);
+
+    //Calculamos la componente especular
+    vec4 ispec = pow(max(dot(r,eye),0.0), u_shininess) * texture_color * light_intensity * light_color;
+    ispec = clamp(ispec,0.0,1.0);
+
+
+    //vec4 light =  dot(v_normal, direction) * texture_color * light_intensity;
+    //vec3 diff = light.xyz * light_color;
+
+    gl_FragColor = vec4(idiff.xyz + ispec.xyz, 1);
 }
 
 
