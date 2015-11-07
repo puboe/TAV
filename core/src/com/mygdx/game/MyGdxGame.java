@@ -26,7 +26,7 @@ public class MyGdxGame extends ApplicationAdapter {
     public void create() {
         texture = new Texture("ship.png");
         String vs = Gdx.files.internal("point-light-VS.glsl").readString();
-        String fs = Gdx.files.internal("point-light-FS.glsl").readString();
+        String fs = Gdx.files.internal("spot-light-FS.glsl").readString();
         shaderProgram = new ShaderProgram(vs, fs);
         System.out.println(shaderProgram.getLog());
         ModelLoader<?> loader = new ObjLoader();
@@ -74,6 +74,8 @@ public class MyGdxGame extends ApplicationAdapter {
         shaderProgram.setUniformi("u_texture", 0);
         shaderProgram.setUniformf("light_intensity", 1f);
         shaderProgram.setUniformf("u_shininess", 1f);
+        shaderProgram.setUniformf("cone_angel", 1f);
+        shaderProgram.setUniform4fv("cone_direction", new float[]{0.1f, 1f, 0.1f, 1f}, 0, 4);
         shaderProgram.setUniform4fv("light_color", new float[]{0.5f, 0.5f, 1f,1f}, 0, 4);
         shaderProgram.setUniform4fv("light_position", new float[]{0.1f, 1f, 0.1f, 1f}, 0, 4);
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
