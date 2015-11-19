@@ -1,18 +1,19 @@
 package light;
 
+import camera.Camera;
 import com.badlogic.gdx.math.Vector3;
 import commons.GameObject;
 
 /**
  * Created by puboe on 25/9/15.
  */
-public abstract class Light extends GameObject {
+public abstract class Light extends Camera {
 
     float intensity;
     Vector3 color;
 
     public Light(Vector3 position, Vector3 color, float intensity) {
-        super();
+        super(0,0,0,0);
         this.position = position;
         this.color = color;
         this.intensity = intensity;

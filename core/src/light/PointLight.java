@@ -1,5 +1,6 @@
 package light;
 
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -11,6 +12,10 @@ public class PointLight extends Light {
         super(position, color, intensity);
     }
 
+    @Override
+    public Matrix4 initializeProjectionMatrix() {
+        return null;
+    }
 }
 
 
