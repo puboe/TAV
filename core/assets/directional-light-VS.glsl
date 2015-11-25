@@ -18,6 +18,5 @@ void main()
     v_normal = normalize(v_normal);
     v_position = u_model * a_position;
     gl_Position =  u_mvp * a_position;
-
 }
 

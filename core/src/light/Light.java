@@ -2,7 +2,6 @@ package light;
 
 import camera.Camera;
 import com.badlogic.gdx.math.Vector3;
-import commons.GameObject;
 
 /**
  * Created by puboe on 25/9/15.
@@ -13,7 +12,7 @@ public abstract class Light extends Camera {
     Vector3 color;
 
     public Light(Vector3 position, Vector3 color, float intensity) {
-        super(0,0,0,0);
+        super(0, 0, 0, 0);
         this.position = position;
         this.color = color;
         this.intensity = intensity;
@@ -34,4 +33,13 @@ public abstract class Light extends Camera {
     public void setColor(Vector3 color) {
         this.color = color;
     }
+
+    public float[] getPositionArray() {
+        return new float[]{position.x, position.y, position.z, 1f};
+    }
+
+    public float[] getColorArray() {
+        return new float[]{color.x, color.y, color.z, 1f};
+    }
+
 }

@@ -12,20 +12,25 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
+import light.PointLight;
 
-public class MyGdxGame extends ApplicationAdapter {
+public class PointLightScene extends ApplicationAdapter {
     Texture texture;
     Mesh spaceshipMesh;
     ShaderProgram shaderProgram;
     com.badlogic.gdx.graphics.Camera cam;
     Camera camera;
     CameraInputController camController;
+    PointLight pointLight;
 
     @Override
     public void create() {
+
         texture = new Texture("ship.png");
-        String vs = Gdx.files.internal("defaultVS.glsl").readString();
-        String fs = Gdx.files.internal("defaultFS.glsl").readString();
+        String vs = Gdx.files.internal("point-light-VS.glsl").readString();
+        String fs = Gdx.files.internal("point-light-FS.glsl").readString();
         shaderProgram = new ShaderProgram(vs, fs);
         System.out.println(shaderProgram.getLog());
         ModelLoader<?> loader = new ObjLoader();
@@ -54,7 +59,7 @@ public class MyGdxGame extends ApplicationAdapter {
 //        camera = new camera.PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, 1000f);
         camera.setPosition(0f, 0f, 3f);
         camera.lookAt(0, 0, 0);
-
+        pointLight = new PointLight(new Vector3(0f, 1f, 0f), new Vector3(1f, 0f, 1f), 1f);
     }
 
     @Override
@@ -69,7 +74,12 @@ public class MyGdxGame extends ApplicationAdapter {
         texture.bind();
         shaderProgram.begin();
         shaderProgram.setUniformMatrix("u_mvp", camera.getCombined());
+        shaderProgram.setUniformMatrix("u_model", new Matrix4());
         shaderProgram.setUniformi("u_texture", 0);
+        shaderProgram.setUniformf("light_intensity", pointLight.getIntensity());
+        shaderProgram.setUniformf("u_shininess", 1f);
+        shaderProgram.setUniform4fv("light_color", pointLight.getColorArray(), 0, 4);
+        shaderProgram.setUniform4fv("light_position", pointLight.getPositionArray(), 0, 4);
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
         shaderProgram.end();
     }
