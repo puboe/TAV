@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import commons.Constants;
 import light.PointLight;
 
 public class PointLightScene extends ApplicationAdapter {
@@ -73,9 +74,9 @@ public class PointLightScene extends ApplicationAdapter {
         Gdx.gl.glDepthFunc(GL20.GL_LESS);
         texture.bind();
         shaderProgram.begin();
-        shaderProgram.setUniformMatrix("u_mvp", camera.getCombined());
-        shaderProgram.setUniformMatrix("u_model", new Matrix4());
-        shaderProgram.setUniformi("u_texture", 0);
+        shaderProgram.setUniformMatrix(Constants.U_MVP, camera.getCombined());
+        shaderProgram.setUniformMatrix(Constants.U_MODEL, new Matrix4());
+        shaderProgram.setUniformi(Constants.U_TEXTURE, 0);
         shaderProgram.setUniformf("light_intensity", pointLight.getIntensity());
         shaderProgram.setUniformf("u_shininess", 1f);
         shaderProgram.setUniform4fv("light_color", pointLight.getColorArray(), 0, 4);
