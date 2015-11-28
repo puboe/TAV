@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import commons.Constants;
 
 public class MyGdxGame extends ApplicationAdapter {
     Texture texture;
@@ -68,8 +69,8 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glDepthFunc(GL20.GL_LESS);
         texture.bind();
         shaderProgram.begin();
-        shaderProgram.setUniformMatrix("u_mvp", camera.getCombined());
-        shaderProgram.setUniformi("u_texture", 0);
+        shaderProgram.setUniformMatrix(Constants.U_MVP, camera.getCombined());
+        shaderProgram.setUniformi(Constants.U_TEXTURE, 0);
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
         shaderProgram.end();
     }
