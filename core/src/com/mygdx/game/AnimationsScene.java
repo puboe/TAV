@@ -47,8 +47,8 @@ public class AnimationsScene extends ApplicationAdapter {
 
         cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 //        cam = new OrthographicCamera(3f, 3f);
-        cam.position.set(1f, 1f, 1f);
-        cam.lookAt(0, 0, 0);
+        cam.position.set(10f, 15f, 10f);
+        cam.lookAt(0, 7f, 0);
         cam.near = 1f;
         cam.far = 300f;
         cam.update();
