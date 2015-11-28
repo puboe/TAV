@@ -59,7 +59,7 @@ public class SpotLightScene extends ApplicationAdapter {
         camera.setPosition(0f, 0f, 3f);
         camera.lookAt(0, 0, 0);
 
-        spotlight = new SpotLight(new Vector3(0f, 0f, 1f), new Vector3(1f, 0f, 1f), 1f, 0.9f, new float[]{0f, 0f, 1f, 1f}, 0f, 100f);
+        spotlight = new SpotLight(new Vector3(0f, 6f, 1f), new Vector3(1f, 0f, 1f), 1f, 0.9f, new float[]{0f, 1f, 0f, 1f}, 0f, 100f);
     }
 
     @Override
