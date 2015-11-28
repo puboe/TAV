@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import commons.Constants;
 import light.SpotLight;
 
 public class SpotLightScene extends ApplicationAdapter {
@@ -59,7 +60,7 @@ public class SpotLightScene extends ApplicationAdapter {
         camera.setPosition(0f, 0f, 3f);
         camera.lookAt(0, 0, 0);
 
-        spotlight = new SpotLight(new Vector3(0f, 0f, 1f), new Vector3(1f, 0f, 1f), 1f, 0.9f, new float[]{0f, 0f, 1f, 1f}, 0f, 100f);
+        spotlight = new SpotLight(new Vector3(0f, 6f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.9f, new float[]{0f, 1f, 0f, 1f}, 0f, 100f);
     }
 
     @Override
@@ -73,9 +74,9 @@ public class SpotLightScene extends ApplicationAdapter {
         Gdx.gl.glDepthFunc(GL20.GL_LESS);
         texture.bind();
         shaderProgram.begin();
-        shaderProgram.setUniformMatrix("u_mvp", camera.getCombined());
-        shaderProgram.setUniformMatrix("u_model", new Matrix4());
-        shaderProgram.setUniformi("u_texture", 0);
+        shaderProgram.setUniformMatrix(Constants.U_MVP, camera.getCombined());
+        shaderProgram.setUniformMatrix(Constants.U_MODEL, new Matrix4());
+        shaderProgram.setUniformi(Constants.U_TEXTURE, 0);
         shaderProgram.setUniformf("light_intensity", spotlight.getIntensity());
         shaderProgram.setUniformf("u_shininess", 1f);
         shaderProgram.setUniformf("cone_angel", spotlight.getAngle());
