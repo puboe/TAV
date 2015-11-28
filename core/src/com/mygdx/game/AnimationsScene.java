@@ -22,9 +22,9 @@ import commons.Constants;
 public class AnimationsScene extends ApplicationAdapter {
 
     private final static int BONES = 12;
+    private final static String FILENAME = "Dave.g3db";
 
     Texture texture;
-    Mesh objMesh;
     ShaderProgram charShader;
     com.badlogic.gdx.graphics.Camera cam;
     Camera camera;
@@ -37,21 +37,11 @@ public class AnimationsScene extends ApplicationAdapter {
     @Override
     public void create() {
 
-        texture = new Texture("Dave.png");
         String vs = Gdx.files.internal("animationsVS.glsl").readString();
         String fs = Gdx.files.internal("defaultFS.glsl").readString();
         charShader = new ShaderProgram(vs, fs);
         System.out.println(charShader.getLog());
 
-//        ModelLoader<?> loader = new ObjLoader();
-//        ModelData data = loader.loadModelData(Gdx.files.internal("ship.obj"));
-//
-//        objMesh = new Mesh(true,
-//                data.meshes.get(0).vertices.length,
-//                data.meshes.get(0).parts[0].indices.length,
-//                VertexAttribute.Position(), VertexAttribute.Normal(), VertexAttribute.TexCoords(0));
-//        objMesh.setVertices(data.meshes.get(0).vertices);
-//        objMesh.setIndices(data.meshes.get(0).parts[0].indices);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(Gdx.gl.GL_LESS);
 
@@ -65,11 +55,12 @@ public class AnimationsScene extends ApplicationAdapter {
         camController = new CameraInputController(cam);
         Gdx.input.setInputProcessor(camController);
 
-        assets.load("Dave.g3db", Model.class);
+        assets.load(FILENAME, Model.class);
         assets.load("Dave.png", Texture.class);
         assets.finishLoading();
 
-        Model characterModel = assets.get("Dave.g3db", Model.class);
+        Model characterModel = assets.get(FILENAME, Model.class);
+        texture = assets.get("Dave.png", Texture.class);
         ModelInstance charInstance = new ModelInstance(characterModel);
         instances.add(charInstance);
 
@@ -84,8 +75,6 @@ public class AnimationsScene extends ApplicationAdapter {
 
         camController.update();
 
-        animationController.update(Gdx.graphics.getDeltaTime());
-
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
@@ -94,9 +83,10 @@ public class AnimationsScene extends ApplicationAdapter {
         Matrix4 mvpMatrix = new Matrix4();
         Matrix4 nMatrix = new Matrix4();
 
-        texture.bind();
         charShader.begin();
-        charShader.setUniformi(Constants.U_TEXTURE, 0);
+//        texture.bind();
+        animationController.update(Gdx.graphics.getDeltaTime());
+//        charShader.setUniformi(Constants.U_TEXTURE, 0);
         // Bind whatever uniforms / textures you need
         for (ModelInstance charInstance : instances) {
             Array<Renderable> renderables = new Array<Renderable>();
