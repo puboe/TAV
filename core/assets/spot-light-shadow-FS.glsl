@@ -2,6 +2,8 @@ varying vec4 v_color;
 varying vec2 v_texCoords;
 varying vec4 v_position;
 varying vec4 v_normal;
+varying vec4 shadow_coord;
+uniform sampler2D shadow_map;
 uniform sampler2D u_texture;
 uniform vec4 light_position;
 uniform float cone_angel;
@@ -27,6 +29,11 @@ void main() {
         attenuation = 1.0;
     }
 
+    float visibility = 1.0;
+    if ( texture2D( shadow_map, shadow_coord.xy ).z  <  shadow_coord.z){
+        visibility = 0.5;
+    }
+
 
     //Calculamos componente difusa
     vec4 idiff = max(0.0, (dot(v_normal.xyz, l))) * texture_color * light_intensity * light_color;
@@ -36,7 +43,7 @@ void main() {
     vec4 ispec = pow(max(dot(r,eye),0.0), u_shininess) * texture_color * light_intensity * light_color;
     ispec = clamp(ispec,0.0,1.0);
 
-    gl_FragColor = vec4(idiff.xyz * attenuation + ispec.xyz * attenuation, 1);
+    gl_FragColor = vec4(idiff.xyz * attenuation * visibility + ispec.xyz * attenuation * visibility, 1);
 }
 
 

@@ -78,11 +78,9 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
         //camera = new camera.OrthographicCamera(3f, 3f, 0f, 15f);
         //camera = new camera.PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, 1000f);
         //camera.setPosition(0f, 0f, 3f);
-       // camera.lookAt(0, 0, 0);
+        //camera.lookAt(0, 0, 0);
 
-        spotlight = new SpotLight(new Vector3(0f, 3f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.95f, new float[]{0f, 1f, 0f, 1f}, 0f, 100f);
-        spotlight.lookAt(0,0,0);
-
+        spotlight = new SpotLight(new Vector3(0f, 6f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.95f, new float[]{0f, 1f, 0f, 1f}, 0f, 100f);
         depthView = spotlight.getCombined();
 
     }
@@ -103,6 +101,7 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
         shaderProgram.setUniformMatrix("depth_mvp", depthView);
         shaderProgram.setUniformi("u_texture", 0);
         shaderProgram.setUniformf("u_shininess", 1f);
+        shaderProgram.setUniformi("shadow_map", 2);
         shaderProgram.setUniformf("light_intensity", spotlight.getIntensity());
         shaderProgram.setUniformf("cone_angel", spotlight.getAngle());
         shaderProgram.setUniform4fv("cone_direction", spotlight.getConeDirection(), 0, 4);
@@ -118,6 +117,7 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
         shaderProgram.setUniformMatrix("depth_mvp", depthView);
         shaderProgram.setUniformi("u_texture", 1);
         shaderProgram.setUniformf("u_shininess", 1f);
+        shaderProgram.setUniformi("shadow_map", 2);
         shaderProgram.setUniformf("light_intensity", spotlight.getIntensity());
         shaderProgram.setUniformf("cone_angel", spotlight.getAngle());
         shaderProgram.setUniform4fv("cone_direction", spotlight.getConeDirection(), 0, 4);
