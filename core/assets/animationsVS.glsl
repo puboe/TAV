@@ -13,7 +13,6 @@ uniform mat4 u_mvpMatrix;
 uniform mat4 u_modelViewMatrix;
 uniform mat4 u_normalMatrix;
 
-
 //Firstly, we need to define loads of new attributes, one for each bone.
 attribute vec2 a_boneWeight0;
 attribute vec2 a_boneWeight1;
@@ -41,12 +40,6 @@ void main() {
     viewSpacePos = vec3((u_modelViewMatrix * pos).xyz);
     viewSpaceNormal = normalize(vec3(u_normalMatrix * skinning * vec4(a_normal, 0.0)).xyz); //viewspaceNormal
     viewSpaceTangent = vec3(u_normalMatrix * vec4(a_tangent,1.0));
-    //gl_Position = u_mvpMatrix * pos;
-    //v_texCoord = a_texCoord0;
-
-    //viewSpacePos = vec3(u_modelViewMatrix * a_position);
-    //viewSpaceNormal = vec3(u_normalMatrix * vec4(a_normal,1.0));
-    //viewSpaceTangent = vec3(u_normalMatrix * vec4(a_tangent,1.0));
     gl_Position = u_mvpMatrix * pos;
     v_texCoord = a_texCoord0;
 
