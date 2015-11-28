@@ -21,7 +21,7 @@ import commons.Constants;
 
 public class AnimationsScene extends ApplicationAdapter {
 
-    private final static int BONES = 4;
+    private final static int BONES = 12;
 
     Texture texture;
     Mesh objMesh;
@@ -30,7 +30,7 @@ public class AnimationsScene extends ApplicationAdapter {
     Camera camera;
     CameraInputController camController;
 
-    AssetManager assets;
+    AssetManager assets = new AssetManager();
     AnimationController animationController;
     Array<ModelInstance> instances = new Array<ModelInstance>();
 
@@ -39,7 +39,7 @@ public class AnimationsScene extends ApplicationAdapter {
 
         texture = new Texture("Dave.png");
         String vs = Gdx.files.internal("animationsVS.glsl").readString();
-        String fs = Gdx.files.internal("animationsFS.glsl").readString();
+        String fs = Gdx.files.internal("defaultFS.glsl").readString();
         charShader = new ShaderProgram(vs, fs);
         System.out.println(charShader.getLog());
 
@@ -65,7 +65,6 @@ public class AnimationsScene extends ApplicationAdapter {
         camController = new CameraInputController(cam);
         Gdx.input.setInputProcessor(camController);
 
-        assets = new AssetManager();
         assets.load("Dave.g3db", Model.class);
         assets.load("Dave.png", Texture.class);
         assets.finishLoading();
