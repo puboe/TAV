@@ -1,6 +1,7 @@
 package commons;
 
-import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
 /**
@@ -8,9 +9,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class Box extends GameObject {
 
-    public Box(Vector3 position, Vector3 rotation, Vector3 scale){
-        this.position = position;
-        this. rotation = rotation;
-        this.scale = scale;
+    public Box(Vector3 position, Mesh mesh, Texture texture) {
+        super(position, mesh, texture);
     }
 }
