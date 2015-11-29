@@ -12,19 +12,22 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import commons.Constants;
+import commons.GameObject;
 
 public class MyGdxGame extends ApplicationAdapter {
-    Texture texture;
-    Mesh spaceshipMesh;
+
     ShaderProgram shaderProgram;
     com.badlogic.gdx.graphics.Camera cam;
     Camera camera;
     CameraInputController camController;
+    Array<GameObject> objects = new Array<GameObject>();
 
     @Override
     public void create() {
-        texture = new Texture("ship.png");
+        Texture texture = new Texture("ship.png");
         String vs = Gdx.files.internal("defaultVS.glsl").readString();
         String fs = Gdx.files.internal("defaultFS.glsl").readString();
         shaderProgram = new ShaderProgram(vs, fs);
@@ -32,12 +35,16 @@ public class MyGdxGame extends ApplicationAdapter {
         ModelLoader<?> loader = new ObjLoader();
         ModelData data = loader.loadModelData(Gdx.files.internal("ship.obj"));
 
-        spaceshipMesh = new Mesh(true,
+        Mesh spaceshipMesh = new Mesh(true,
                 data.meshes.get(0).vertices.length,
                 data.meshes.get(0).parts[0].indices.length,
                 VertexAttribute.Position(), VertexAttribute.Normal(), VertexAttribute.TexCoords(0));
         spaceshipMesh.setVertices(data.meshes.get(0).vertices);
         spaceshipMesh.setIndices(data.meshes.get(0).parts[0].indices);
+
+        GameObject ship = new GameObject(new Vector3(0, 0, 0), spaceshipMesh, texture);
+        objects.add(ship);
+
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(Gdx.gl.GL_LESS);
 
@@ -67,11 +74,16 @@ public class MyGdxGame extends ApplicationAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL20.GL_LESS);
-        texture.bind();
         shaderProgram.begin();
-        shaderProgram.setUniformMatrix(Constants.U_MVP, camera.getCombined());
-        shaderProgram.setUniformi(Constants.U_TEXTURE, 0);
-        spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
+
+        for (GameObject obj : objects) {
+            obj.getTexture().bind();
+            shaderProgram.setUniformMatrix(Constants.U_MVP, camera.getCombined().cpy().mul(obj.getTRS()));
+//            shaderProgram.setUniformMatrix(Constants.U_MODEL, obj.getTRS());
+            shaderProgram.setUniformi(Constants.U_TEXTURE, 0);
+            obj.getMesh().render(shaderProgram, GL20.GL_TRIANGLES);
+        }
+
         shaderProgram.end();
     }
 }
