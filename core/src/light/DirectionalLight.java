@@ -15,14 +15,14 @@ public class DirectionalLight extends Light {
     float height;
     float width;
 
-    public DirectionalLight(Vector3 position, Vector3 color, float intensity, float[] coneDirection) {
+    public DirectionalLight(Vector3 position, Vector3 color, float intensity, float[] direction) {
         super(position, color, intensity);
-        this.direction = coneDirection;
+        this.direction = direction;
     }
 
-    public DirectionalLight(Vector3 position, Vector3 color, float intensity, float[] coneDirection, float far, float near) {
+    public DirectionalLight(Vector3 position, Vector3 color, float intensity, float[] direction, float far, float near) {
         super(position, color, intensity);
-        this.direction = coneDirection;
+        this.direction = direction;
         this.far = far;
         this.near = near;
         this.height = 50;
@@ -30,12 +30,12 @@ public class DirectionalLight extends Light {
         this.projectionMatrix = initializeProjectionMatrix();
     }
 
-    public float[] getConeDirection() {
+    public float[] getDirection() {
         return direction;
     }
 
-    public void setConeDirection(float[] coneDirection) {
-        this.direction = coneDirection;
+    public void setDirection(float[] direction) {
+        this.direction = direction;
     }
 
     public Matrix4 initializeProjectionMatrix() {

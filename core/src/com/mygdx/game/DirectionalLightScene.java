@@ -56,7 +56,7 @@ public class DirectionalLightScene extends ApplicationAdapter {
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(Gdx.gl.GL_LESS);
 
-        GameObject ship = new GameObject(new Vector3(0, 0, 0), spaceshipMesh, shipTexture);
+        GameObject ship = new GameObject(new Vector3(0f, 1f, 0), spaceshipMesh, shipTexture);
         Box box = new Box(new Vector3(0, 3f, 0), boxMesh, boxTexture);
         objects.add(ship);
         objects.add(box);
@@ -96,7 +96,7 @@ public class DirectionalLightScene extends ApplicationAdapter {
 
         shaderProgram.setUniformf("u_shininess", 1f);
         shaderProgram.setUniformf("light_intensity", directionalLight.getIntensity());
-        shaderProgram.setUniform4fv("cone_direction", directionalLight.getConeDirection(), 0, 4);
+        shaderProgram.setUniform4fv("cone_direction", directionalLight.getDirection(), 0, 4);
         shaderProgram.setUniform4fv("light_color", directionalLight.getColorArray(), 0, 4);
         shaderProgram.setUniform4fv("light_position", directionalLight.getPositionArray(), 0, 4);
         shaderProgram.end();
