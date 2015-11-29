@@ -21,9 +21,8 @@ public class DirectionalLightScene extends ApplicationAdapter {
     com.badlogic.gdx.graphics.Camera cam;
     Camera camera;
     CameraInputController camController;
-    DirectionalLight spotlight;
+    DirectionalLight directionalLight;
     Array<GameObject> objects = new Array<GameObject>();
-
 
     @Override
     public void create() {
@@ -72,13 +71,7 @@ public class DirectionalLightScene extends ApplicationAdapter {
         camController = new CameraInputController(cam);
         Gdx.input.setInputProcessor(camController);
 
-        //camera = new camera.OrthographicCamera(3f, 3f, 0f, 15f);
-        //camera = new camera.PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, 1000f);
-        //camera.setPosition(0f, 0f, 3f);
-        // camera.lookAt(0, 0, 0);
-
-        spotlight = new DirectionalLight(new Vector3(3f, 3f, 0f), new Vector3(1f, 0f, 1f), 1f, new float[]{1f, 0f, 0f, 1f}, 0f, 100f);
-//        spotlight.lookAt(0, 0, 0);
+        directionalLight = new DirectionalLight(new Vector3(3f, 3f, 0f), new Vector3(1f, 0f, 1f), 1f, new float[]{1f, 0f, 1f, 1f}, 0f, 100f);
     }
 
     @Override
@@ -102,10 +95,10 @@ public class DirectionalLightScene extends ApplicationAdapter {
         }
 
         shaderProgram.setUniformf("u_shininess", 1f);
-        shaderProgram.setUniformf("light_intensity", spotlight.getIntensity());
-        shaderProgram.setUniform4fv("cone_direction", spotlight.getConeDirection(), 0, 4);
-        shaderProgram.setUniform4fv("light_color", spotlight.getColorArray(), 0, 4);
-        shaderProgram.setUniform4fv("light_position", spotlight.getPositionArray(), 0, 4);
+        shaderProgram.setUniformf("light_intensity", directionalLight.getIntensity());
+        shaderProgram.setUniform4fv("cone_direction", directionalLight.getConeDirection(), 0, 4);
+        shaderProgram.setUniform4fv("light_color", directionalLight.getColorArray(), 0, 4);
+        shaderProgram.setUniform4fv("light_position", directionalLight.getPositionArray(), 0, 4);
         shaderProgram.end();
     }
 }
