@@ -28,9 +28,10 @@ public class AnimationsScene extends ApplicationAdapter {
     Camera camera;
     CameraInputController camController;
 
-    AssetManager assets = new AssetManager();
-    AnimationController animationController;
-    Array<ModelInstance> instances = new Array<ModelInstance>();
+    private AssetManager assets = new AssetManager();
+    private AnimationController animationController;
+    private Array<ModelInstance> instances = new Array<ModelInstance>();
+    private Pool<Renderable> pool;
 
     @Override
     public void create() {
@@ -65,6 +66,21 @@ public class AnimationsScene extends ApplicationAdapter {
         animationController = new AnimationController(charInstance);
         animationController.animate(charInstance.animations.get(0).id, -1, 1f, null, 0.2f); // Starts the animaton
 
+        pool = new Pool<Renderable>() {
+            @Override
+            protected Renderable newObject() {
+                return new Renderable();
+            }
+
+            @Override
+            public Renderable obtain() {
+                Renderable renderable = super.obtain();
+                renderable.material = null;
+                renderable.mesh = null;
+                renderable.shader = null;
+                return renderable;
+            }
+        };
     }
 
 
@@ -88,27 +104,12 @@ public class AnimationsScene extends ApplicationAdapter {
         // Bind whatever uniforms / textures you need
         for (ModelInstance charInstance : instances) {
             Array<Renderable> renderables = new Array<Renderable>();
-            final Pool<Renderable> pool = new Pool<Renderable>() {
-                @Override
-                protected Renderable newObject() {
-                    return new Renderable();
-                }
-
-                @Override
-                public Renderable obtain() {
-                    Renderable renderable = super.obtain();
-//                    renderable.lights = null;
-                    renderable.material = null;
-                    renderable.mesh = null;
-                    renderable.shader = null;
-                    return renderable;
-                }
-            };
             charInstance.getRenderables(renderables, pool);
             Matrix4 idtMatrix = new Matrix4().idt();
             float[] bones = new float[BONES * 16];
-            for (int i = 0; i < bones.length; i++)
+            for (int i = 0; i < bones.length; i++) {
                 bones[i] = idtMatrix.val[i % 16];
+            }
             for (Renderable render : renderables) {
                 mvpMatrix.set(cam.combined);
                 mvpMatrix.mul(render.worldTransform);
@@ -131,18 +132,12 @@ public class AnimationsScene extends ApplicationAdapter {
         }
         charShader.end();
 
-
-//        shaderProgram.begin();
-//        shaderProgram.setUniformMatrix(Constants.U_MVP, cam.combined);
-//        shaderProgram.setUniformi(Constants.U_TEXTURE, 0);
-//        objMesh.render(shaderProgram, GL20.GL_TRIANGLES);
-//        shaderProgram.end();
     }
 
     @Override
     public void dispose() {
-//        modelBatch.dispose();
         instances.clear();
         assets.dispose();
+        pool.clear();
     }
 }
