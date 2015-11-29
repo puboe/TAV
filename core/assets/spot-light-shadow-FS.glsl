@@ -30,7 +30,15 @@ void main() {
     }
 
     float visibility = 1.0;
-    if ( texture2D( shadow_map, shadow_coord.xy ).z  <  shadow_coord.z){
+
+    vec3 normalizeSC = (shadow_coord.xyz + vec3(1,1,1)) / 2.0;
+
+
+    vec4 bitSh = vec4(1.0/(256.0*256.0*256.0), 1.0/(256.0*256.0), 1.0/256.0, 1.0);
+    float unpacked = dot(texture2D( shadow_map, normalizeSC.xy ), bitSh);
+
+
+    if ( unpacked <  normalizeSC.z){
         visibility = 0.5;
     }
 
@@ -45,5 +53,6 @@ void main() {
 
     gl_FragColor = vec4(idiff.xyz * attenuation * visibility + ispec.xyz * attenuation * visibility, 1);
 }
+
 
 

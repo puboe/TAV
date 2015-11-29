@@ -4,12 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import commons.GameObject;
+import commons.BasicObject;
 
 /**
  * Abstract class representing the Camera.
  */
-public abstract class Camera extends GameObject {
+public abstract class Camera extends BasicObject {
 
     private static float SPEED = 1f;
 

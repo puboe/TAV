@@ -8,10 +8,12 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.model.data.ModelData;
 import com.badlogic.gdx.graphics.g3d.utils.CameraInputController;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import commons.Box;
+import light.Light;
 import light.SpotLight;
 
 /**
@@ -30,19 +32,28 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
     Box box;
     Mesh boxMesh;
     Matrix4 depthView;
+    FrameBuffer spotlightShadowBuffer;
+    ShaderProgram depthShader;
 
     @Override
     public void create() {
         texture = new Texture("ship.png");
         boxTexture = new Texture("texture.png");
 
-        box = new Box(new Vector3(0, 3f, 0), new Vector3(0,0,0), new Vector3(1,1,1));
+        spotlightShadowBuffer = new FrameBuffer(Pixmap.Format.RGB888, 4096, 4096, true);
+
+        box = new Box(new Vector3(0, 2f, 0f), new Vector3(0,0,0), new Vector3(0.5f,0.5f,0.5f));
 
         String vs = Gdx.files.internal("spot-light-shadow-VS.glsl").readString();
         String fs = Gdx.files.internal("spot-light-shadow-FS.glsl").readString();
 
+        String dvs = Gdx.files.internal("SS-VS.glsl").readString();
+        String dfs = Gdx.files.internal("SS-FS.glsl").readString();
+
+        depthShader = new ShaderProgram(dvs, dfs);
         shaderProgram = new ShaderProgram(vs, fs);
         System.out.println(shaderProgram.getLog());
+        System.out.println(depthShader.getLog());
 
         ModelLoader<?> loader = new ObjLoader();
         ModelData data = loader.loadModelData(Gdx.files.internal("ship.obj"));
@@ -80,7 +91,7 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
         //camera.setPosition(0f, 0f, 3f);
         //camera.lookAt(0, 0, 0);
 
-        spotlight = new SpotLight(new Vector3(0f, 6f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.95f, new float[]{0f, 1f, 0f, 1f}, 0f, 100f);
+        spotlight = new SpotLight(new Vector3(0f, 1f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.8f, new float[]{0f, 1f, 0f, 1f}, 0f, 100f);
         depthView = spotlight.getCombined();
 
     }
@@ -88,13 +99,26 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
     @Override
     public void render() {
 
-        cam.update();
+
 
         Gdx.gl.glClearColor(0.5f, 0.5f, 0.5f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glEnable(GL20.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL20.GL_LESS);
+
+
+        spotlightShadowBuffer.begin();
+        renderDepthShader(spotlight);
+        spotlightShadowBuffer.end();
+
+        Texture shadowMap = spotlightShadowBuffer.getColorBufferTexture();
+        shadowMap.bind(2);
+
+        cam.update();
+
+
         texture.bind();
+        boxTexture.bind(1);
         shaderProgram.begin();
         shaderProgram.setUniformMatrix("u_mvp", cam.combined);
         shaderProgram.setUniformMatrix("u_model", new Matrix4());
@@ -110,10 +134,9 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
         spaceshipMesh.render(shaderProgram, GL20.GL_TRIANGLES);
         shaderProgram.end();
 
-        boxTexture.bind(1);
         shaderProgram.begin();
         shaderProgram.setUniformMatrix("u_mvp", cam.combined.cpy().mul(box.getTRS()));
-        shaderProgram.setUniformMatrix("u_model", new Matrix4());
+        shaderProgram.setUniformMatrix("u_model", box.getTRS());
         shaderProgram.setUniformMatrix("depth_mvp", depthView);
         shaderProgram.setUniformi("u_texture", 1);
         shaderProgram.setUniformf("u_shininess", 1f);
@@ -125,6 +148,22 @@ public class ShadowSpotlightScene  extends ApplicationAdapter{
         shaderProgram.setUniform4fv("light_position", spotlight.getPositionArray(), 0, 4);
         boxMesh.render(shaderProgram, GL20.GL_TRIANGLES);
         shaderProgram.end();
+
+    }
+
+    private void renderDepthShader(Light light) {
+
+        depthShader.begin();
+
+        texture.bind(0);
+        depthShader.setUniformMatrix("u_mvp", light.getCombined().cpy().mul(new Matrix4()));
+        spaceshipMesh.render(depthShader, GL20.GL_TRIANGLES);
+
+        boxTexture.bind(0);
+        depthShader.setUniformMatrix("u_mvp", light.getCombined().cpy().mul(box.getTRS()));
+        boxMesh.render(depthShader, GL20.GL_TRIANGLES);
+
+        depthShader.end();
 
     }
 
