@@ -29,11 +29,10 @@ void main() {
     }
 
 	vec4 l = normalize(v_position - light_position);
-	float cosine_light = dot(l,normalize(light_direction));
-	float spotlight = smoothstep(cosine_outter,cosine_inner,cosine_light);
+	float lightToSurfaceAngle = dot(l, normalize(light_direction));
    	gl_FragColor = v_color * texture2D(u_texture, v_texCoords);
     float normal_dot_light = dot(normal, normalize(l));
-    vec4 diffusal_irradiance = spotlight  * gl_FragColor  * light_color ;
+    vec4 diffusal_irradiance = lightToSurfaceAngle  * gl_FragColor  * light_color ;
     float material = 1.2;
     vec4 r = -1.0*l + 2.0 * normal_dot_light * normal;
     vec4 m_spec = vec4(0.00001,0.00001,0.00001,1);
