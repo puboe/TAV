@@ -14,10 +14,14 @@ import com.badlogic.gdx.utils.Array;
 import commons.Box;
 import commons.Constants;
 import commons.GameObject;
+import light.DirectionalLight;
 import light.Light;
 import light.SpotLight;
 
-public class ShadowSpotlightScene extends ApplicationAdapter {
+/**
+ * Created by riveign on 11/29/15.
+ */
+public class DirctionalShadowScene extends ApplicationAdapter {
 
     ShaderProgram shaderProgram;
     Camera cam;
@@ -42,7 +46,7 @@ public class ShadowSpotlightScene extends ApplicationAdapter {
 
         boxMesh.setVertices(boxData.meshes.get(0).vertices);
         boxMesh.setIndices(boxData.meshes.get(0).parts[0].indices);
-        Box box = new Box(new Vector3(-1f, 1f, 0f), boxMesh, boxTexture);
+        Box box = new Box(new Vector3(0f, 1f, 0f), boxMesh, boxTexture);
         objects.add(box);
 
         // Ship
@@ -58,7 +62,7 @@ public class ShadowSpotlightScene extends ApplicationAdapter {
         objects.add(ship);
 
         // Lights
-        spotLight = new SpotLight(new Vector3(0f, 3f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.54f, new float[]{0f, -1f, 0f, 1f}, 0f, 100f);
+        spotLight = new SpotLight(new Vector3(1f, 0f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.54f, new float[]{-1f, 1f, 0f, 1f}, 0f, 100f);
         spotLight.setRotation(new Vector3((float) (Math.PI * 1.5f), 0, 0));
         lights.add(spotLight);
 
@@ -79,7 +83,7 @@ public class ShadowSpotlightScene extends ApplicationAdapter {
 
         // Shader
         String vs = Gdx.files.internal("shaders/defaultVS.glsl").readString();
-        String fs = Gdx.files.internal("shaders/spotLightFS.glsl").readString();
+        String fs = Gdx.files.internal("shaders/directionalLightFS.glsl").readString();
         shaderProgram = new ShaderProgram(vs, fs);
     }
 
@@ -114,11 +118,6 @@ public class ShadowSpotlightScene extends ApplicationAdapter {
             //Ambiente
             shaderProgram.setUniform4fv("ambient_color", new float[]{0, 0, 1, 1}, 0, 4);
             shaderProgram.setUniform4fv("light_direction", spotLight.getConeDirection(), 0, 4);
-            // TODO DESHARDCODEAR ESTO.
-            shaderProgram.setUniformf("cosine_inner", (float) Math.cos(Math.toRadians(45.4f)));
-            shaderProgram.setUniformf("cosine_outter", (float) Math.cos(Math.toRadians(50f)));
-//            shaderProgram.setUniformf("cosine_inner", (float) Math.cos(spotLight.getAngle()));
-//            shaderProgram.setUniformf("cosine_outter", (float) Math.cos(spotLight.getAngle()+0.05f));
             object.getMesh().render(shaderProgram, GL20.GL_TRIANGLES);
 
             shaderProgram.end();

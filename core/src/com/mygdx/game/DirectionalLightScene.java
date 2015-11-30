@@ -44,8 +44,7 @@ public class DirectionalLightScene extends ApplicationAdapter {
         spaceshipMesh.setVertices(data.meshes.get(0).vertices);
         spaceshipMesh.setIndices(data.meshes.get(0).parts[0].indices);
 
-        ModelLoader<?> boxLoader = new ObjLoader();
-        ModelData boxData = boxLoader.loadModelData(Gdx.files.internal("box.obj"));
+        ModelData boxData = loader.loadModelData(Gdx.files.internal("box.obj"));
         Mesh boxMesh = new Mesh(true,
                 boxData.meshes.get(0).vertices.length,
                 boxData.meshes.get(0).parts[0].indices.length,

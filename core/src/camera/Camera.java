@@ -70,8 +70,7 @@ public abstract class Camera extends BasicObject {
     }
 
     public Matrix4 getCombined() {
-        Matrix4 tmp = projectionMatrix.cpy();
-        return tmp.mul(viewMatrix);
+        return projectionMatrix.cpy().mul(viewMatrix);
     }
 
     public Matrix4 getViewMatrix() {
