@@ -58,7 +58,7 @@ public class ShadowSpotlightScene extends ApplicationAdapter {
         objects.add(ship);
 
         // Lights
-        spotLight = new SpotLight(new Vector3(0f, 1f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.54f, new float[]{0f, -1f, 0f, 1f}, 0f, 100f);
+        spotLight = new SpotLight(new Vector3(0f, 3f, 0f), new Vector3(1f, 0f, 1f), 1f, 0.54f, new float[]{0f, -1f, 0f, 1f}, 0f, 100f);
         spotLight.setRotation(new Vector3((float) (Math.PI * 1.5f), 0, 0));
         lights.add(spotLight);
 
