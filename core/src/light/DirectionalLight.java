@@ -1,7 +1,10 @@
 package light;
 
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import commons.GameObject;
 
 /**
  * Created by riveign on 11/6/15.
@@ -28,6 +31,12 @@ public class DirectionalLight extends Light {
         this.height = 50;
         this.width = 50;
         this.projectionMatrix = initializeProjectionMatrix();
+    }
+
+    @Override
+    public FrameBuffer generateShadowMap(Array<GameObject> objects) {
+        // TODO: HACER!
+        return null;
     }
 
     public float[] getDirection() {
